@@ -3,65 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cleanearth Monitoring Framework</title>
+  <title>Cleanearth Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f8fa;
       margin: 0;
-      padding: 0;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       color: #333;
     }
-    header {
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    h2 {
+      color: #006c67;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+    button {
       background-color: #006c67;
       color: white;
-      padding: 20px 0;
-      font-size: 1.6em;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-    .container {
-      margin-top: 80px;
-    }
-    .button {
-      display: inline-block;
-      background-color: #006c67;
-      color: white;
-      padding: 15px 40px;
-      margin: 10px;
       border: none;
-      border-radius: 8px;
-      font-size: 1.1em;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 1em;
       cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      width: 260px;
+      margin-top: 10px;
+      width: 100%;
     }
-    .button:hover {
+    button:hover {
       background-color: #004e4a;
-      transform: scale(1.05);
     }
-    footer {
-      margin-top: 100px;
+    .error {
+      color: red;
       font-size: 0.9em;
-      color: #777;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <header>Cleanearth Monitoring Framework</header>
-
-  <div class="container">
-    <p>Select a form to begin:</p>
-
-    <a class="button" href="https://forms.office.com/r/pKvE5Tx4DK" target="_blank">Daily Log</a><br><br>
-    <a class="button" href="https://forms.office.com/r/8WqvQXfUpg" target="_blank">Process Sequence (Every 3 Hours)</a><br><br>
-    <a class="button" href="https://forms.office.com/r/svDTTiz80B" target="_blank">Maintenance Log</a>
+  <div class="login-box">
+    <h2>Cleanearth Portal</h2>
+    <input type="text" id="userid" placeholder="User ID" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <p id="error-message" class="error">Invalid credentials. Try again.</p>
   </div>
 
-  <footer>
-    <p>© 2025 Cleanearth. All rights reserved.</p>
-  </footer>
+  <script>
+    function login() {
+      const user = document.getElementById("userid").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      
+      // You can change these credentials
+      const validUser = "cleanearth";
+      const validPass = "monitor2025";
+
+      if (user === validUser && pass === validPass) {
+        window.location.href = "dashboard.html"; // Redirect to dashboard
+      } else {
+        document.getElementById("error-message").style.display = "block";
+      }
+    }
+  </script>
 </body>
 </html>
