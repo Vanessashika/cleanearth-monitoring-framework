@@ -1,171 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cleanearth Monitoring Framework</title>
-<style>
-  body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #00796b, #009688, #26a69a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    overflow: hidden;
-    position: relative;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cleanearth Monitoring Framework</title>
+  <style>
+    /* General background styling */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        linear-gradient(to bottom right, rgba(55, 94, 139, 0.85), rgba(81, 184, 72, 0.85), rgba(147, 149, 152, 0.85)),
+        url('https://raw.githubusercontent.com/Vanessashika/cleanearth-monitoring-framework/refs/heads/main/Cleanearth%2016.9%20(1).png') center/contain no-repeat;
+      background-size: 70%;
+      background-attachment: fixed;
+      background-blend-mode: overlay;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 1s ease-in-out;
+    }
 
-  /* Background logo styling */
-  body::before {
-    content: "";
-    background: url('c780c586-0bc2-472a-8d12-f3f1a587274b.png') no-repeat center center;
-    background-size: 45%;
-    opacity: 0.07;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 0;
-  }
+    /* Container for both login and main sections */
+    .container {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      animation: fadeIn 1s ease-in-out;
+    }
 
-  .container {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.12);
-    padding: 40px;
-    border-radius: 16px;
-    width: 330px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    transition: opacity 1s ease;
-    position: relative;
-    z-index: 1;
-  }
+    h1 {
+      margin-bottom: 20px;
+      color: #375e8b;
+    }
 
-  h1 {
-    font-size: 22px;
-    margin-bottom: 20px;
-  }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
 
-  input {
-    width: 85%;
-    padding: 10px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 6px;
-    outline: none;
-  }
+    button {
+      background-color: #375e8b;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
 
-  button {
-    width: 90%;
-    padding: 10px;
-    margin-top: 12px;
-    background-color: #004d40;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: background 0.3s;
-  }
+    button:hover {
+      background-color: #51b848;
+    }
 
-  button:hover {
-    background-color: #00332d;
-  }
+    .hidden {
+      display: none;
+    }
 
-  .error {
-    color: #ffbdbd;
-    font-size: 14px;
-    margin-top: 8px;
-  }
+    .form-buttons button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+    }
 
-  .hidden {
-    display: none;
-  }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
 
-  .fade-in {
-    opacity: 0;
-    animation: fadeIn 1.5s forwards;
-  }
+    .logout-btn {
+      background-color: #939598;
+      margin-top: 20px;
+    }
 
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
-  .form-button {
-    background-color: #00695c;
-    margin: 8px 0;
-  }
-
-  .logout {
-    background-color: #d32f2f;
-    margin-top: 18px;
-  }
-
-  img.logo {
-    width: 150px;
-    opacity: 0.9;
-    margin-bottom: 15px;
-  }
-</style>
+    .logout-btn:hover {
+      background-color: #375e8b;
+    }
+  </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div class="container" id="login-container">
-  <img src="c780c586-0bc2-472a-8d12-f3f1a587274b.png" alt="Cleanearth Logo" class="logo">
-  <h1>Cleanearth Login</h1>
-  <input type="text" id="userId" placeholder="User ID"><br>
-  <input type="password" id="password" placeholder="Password"><br>
-  <button onclick="login()">Login</button>
-  <div class="error" id="error-message"></div>
-</div>
+  <!-- Login Page -->
+  <div class="container" id="loginPage">
+    <h1>Cleanearth Login</h1>
+    <input type="text" id="userID" placeholder="User ID" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
 
-<!-- WELCOME SCREEN -->
-<div class="container hidden" id="welcome-container">
-  <h1>Welcome to<br>Cleanearth Monitoring Framework</h1>
-</div>
+  <!-- Main Dashboard -->
+  <div class="container hidden" id="mainPage">
+    <h1>Cleanearth Monitoring Framework</h1>
+    <div class="form-buttons">
+      <button onclick="window.open('https://forms.office.com/r/pKvE5Tx4DK', '_blank')">Daily Log</button>
+      <button onclick="window.open('https://forms.office.com/r/8WqvQXfUpg', '_blank')">Process Sequence (3 Hours)</button>
+      <button onclick="window.open('https://forms.office.com/r/svDTTiz80B', '_blank')">Maintenance Log</button>
+      <button onclick="window.open('https://forms.office.com/r/8gJUjks0Hs', '_blank')">Effluent Quality</button>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 
-<!-- DASHBOARD -->
-<div class="container hidden" id="dashboard-container">
-  <img src="c780c586-0bc2-472a-8d12-f3f1a587274b.png" alt="Cleanearth Logo" class="logo">
-  <h1>Monitoring Framework</h1>
-  <button class="form-button" onclick="window.open('https://forms.office.com/r/pKvE5Tx4DK', '_blank')">Daily Log</button>
-  <button class="form-button" onclick="window.open('https://forms.office.com/r/8WqvQXfUpg', '_blank')">Process Sequence (Every 3 Hours)</button>
-  <button class="form-button" onclick="window.open('https://forms.office.com/r/svDTTiz80B', '_blank')">Maintenance Log</button>
-  <button class="form-button" onclick="window.open('https://forms.office.com/r/8gJUjks0Hs', '_blank')">Effluent Quality</button>
-  <button class="logout" onclick="logout()">Logout</button>
-</div>
+  <script>
+    // Simple login validation
+    function login() {
+      const user = document.getElementById("userID").value;
+      const pass = document.getElementById("password").value;
 
-<script>
-  function login() {
-    const user = document.getElementById('userId').value.trim();
-    const pass = document.getElementById('password').value.trim();
-    const errorMsg = document.getElementById('error-message');
-
-    if (user === "Cleanearth" && pass === "monitor2025") {
-      document.getElementById('login-container').classList.add('hidden');
-      const welcome = document.getElementById('welcome-container');
-      welcome.classList.remove('hidden');
-      welcome.classList.add('fade-in');
-
-      setTimeout(() => {
-        welcome.classList.add('hidden');
-        const dashboard = document.getElementById('dashboard-container');
-        dashboard.classList.remove('hidden');
-        dashboard.classList.add('fade-in');
-      }, 2000);
-    } else {
-      errorMsg.textContent = "Invalid User ID or Password.";
+      if (user === "Cleanearth" && pass === "monitor2025") {
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+      } else {
+        alert("Invalid User ID or Password");
+      }
     }
-  }
 
-  function logout() {
-    document.getElementById('dashboard-container').classList.add('hidden');
-    document.getElementById('userId').value = "";
-    document.getElementById('password').value = "";
-    document.getElementById('login-container').classList.remove('hidden');
-  }
-</script>
+    // Logout functionality
+    function logout() {
+      document.getElementById("mainPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+      document.getElementById("userID").value = "";
+      document.getElementById("password").value = "";
+    }
+  </script>
 
 </body>
 </html>
