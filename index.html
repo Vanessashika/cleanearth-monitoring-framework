@@ -1,216 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cleanearth Monitoring Framework</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleanearth Monitoring Framework</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(to bottom right, #375e8b, #939598);
-      overflow: hidden;
-      position: relative;
-    }
+  body {
+    background: linear-gradient(135deg, rgba(55,94,139,0.9), rgba(147,149,152,0.9), rgba(81,184,72,0.8));
+    background-attachment: fixed;
+    background-size: cover;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+  }
 
-    body::before {
-      content: "";
-      background: url("https://raw.githubusercontent.com/Vanessashika/cleanearth-monitoring-framework/refs/heads/main/Cleanearth%2016.9%20(1).png") center/cover no-repeat;
-      opacity: 0.15;
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
+  body::before {
+    content: "";
+    background: url('Cleanearth 16.9 (1).png') center/cover no-repeat;
+    opacity: 0.25;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+  }
 
-    .container {
-      text-align: center;
-      background: rgba(255, 255, 255, 0.15);
-      padding: 2rem 3rem;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      z-index: 1;
-      transition: all 0.5s ease;
-      width: 90%;
-      max-width: 600px;
-    }
+  .hidden { display: none; }
+  .container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s ease;
+  }
 
-    h1, h2 {
-      color: white;
-      margin-bottom: 1.5rem;
-    }
+  h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+  h2 { margin-bottom: 1.5rem; font-weight: normal; }
 
-    button {
-      background-color: #375e8b;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      margin: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+  button {
+    background: #375e8b;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    margin: 8px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
-    button:hover {
-      transform: translateY(-3px);
-      background-color: #2b4c72;
-    }
+  button:hover {
+    transform: scale(1.05);
+    background: #51b848;
+  }
 
-    #logoutBtn {
-      background-color: #2b4c72;
-      margin-top: 1rem;
-    }
+  .logout-btn {
+    background: #2c4370;
+  }
+  .logout-btn:hover {
+    background: #213556;
+  }
 
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-    }
+  input {
+    padding: 10px;
+    margin: 8px;
+    border: none;
+    border-radius: 5px;
+    width: 250px;
+  }
 
-    .hidden {
-      display: none;
-    }
-  </style>
+  iframe {
+    width: 100%;
+    height: 100vh;
+    border: none;
+  }
+</style>
 </head>
 <body>
 
-  <!-- Welcome Page -->
-  <div class="container" id="welcomePage">
-    <h1>Welcome to Cleanearth Monitoring Framework</h1>
-    <button onclick="goToRoleSelect()">Get Started</button>
-  </div>
+<!-- Welcome Screen -->
+<div class="container" id="welcomePage">
+  <h1>Welcome to Cleanearth Monitoring Framework</h1>
+  <button onclick="showPage('rolePage')">Get Started</button>
+</div>
 
-  <!-- Role Selection -->
-  <div class="container hidden" id="rolePage">
-    <h2>Who’s Monitoring?</h2>
-    <button onclick="selectRole('admin')">Administrator</button>
-    <button onclick="selectRole('operator')">Operator</button>
-  </div>
+<!-- Who's Monitoring -->
+<div class="container hidden" id="rolePage">
+  <h1>Who's Monitoring?</h1>
+  <button onclick="setRole('admin')">Administrator</button>
+  <button onclick="setRole('operator')">Operator</button>
+</div>
 
-  <!-- Login Page -->
-  <div class="container hidden" id="loginPage">
-    <h2>Login</h2>
-    <input type="text" id="userId" placeholder="User ID" style="padding:8px;border-radius:5px;border:none;margin-bottom:10px;"><br>
-    <input type="password" id="password" placeholder="Password" style="padding:8px;border-radius:5px;border:none;"><br><br>
-    <button onclick="login()">Login</button>
-  </div>
+<!-- Login Page -->
+<div class="container hidden" id="loginPage">
+  <h1>Login</h1>
+  <input type="text" id="userId" placeholder="User ID" />
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+  <button class="logout-btn" onclick="showPage('rolePage')">Back</button>
+</div>
 
-  <!-- Dashboard -->
-  <div class="container hidden" id="dashboard">
-    <h2 id="dashboardTitle">Pick a Form to Fill</h2>
-    <div id="formButtons"></div>
-    <button id="logoutBtn" onclick="logout()">Logout</button>
-  </div>
+<!-- Menu Page -->
+<div class="container hidden" id="menuPage">
+  <h1 id="roleTitle"></h1>
+  <h2>Pick a form to fill</h2>
+  <div id="formButtons"></div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
 
-  <!-- Embedded Form -->
-  <div class="hidden" id="formContainer">
-    <iframe id="formFrame"></iframe>
-  </div>
+<!-- Embedded Form Page -->
+<div class="container hidden" id="formPage">
+  <iframe id="formFrame"></iframe>
+  <button class="logout-btn" onclick="backToMenu()">Back to Menu</button>
+</div>
 
-  <script>
-    const welcomePage = document.getElementById("welcomePage");
-    const rolePage = document.getElementById("rolePage");
-    const loginPage = document.getElementById("loginPage");
-    const dashboard = document.getElementById("dashboard");
-    const formContainer = document.getElementById("formContainer");
-    const formFrame = document.getElementById("formFrame");
-    const formButtons = document.getElementById("formButtons");
+<script>
+  let userRole = "";
+  let inactivityTimer;
 
-    let currentRole = null;
-    let inactivityTimer;
+  const forms = {
+    operator: [
+      { name: "Daily Monitoring Log", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNVlRMU5KRzUzRDNMTElYT0ZUUFVHRVJZWC4u&embed=true" },
+      { name: "Process Sequence", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNUJPME9FOFpFU1FXNTJIVjEyWlBGWEtKTC4u&embed=true" },
+      { name: "Equipment Maintenance Log", url: "https://forms.office.com/r/svDTTiz80B?embed=true" }
+    ],
+    admin: [
+      { name: "Process Sequence", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5URERPOFpHWjlFTU9GWlBORlRPMTA1M1pMVC4u&embed=true" },
+      { name: "Effluent Quality", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UQzBEUlI1OEtHNFBEWURZTzZRM1JOTE9MRS4u&embed=true" }
+    ]
+  };
 
-    function goToRoleSelect() {
-      welcomePage.classList.add("hidden");
-      rolePage.classList.remove("hidden");
+  function showPage(pageId) {
+    document.querySelectorAll('.container').forEach(div => div.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    resetTimer();
+  }
+
+  function setRole(role) {
+    userRole = role;
+    showPage('loginPage');
+  }
+
+  function login() {
+    const id = document.getElementById('userId').value.trim();
+    const pw = document.getElementById('password').value.trim();
+
+    if ((userRole === "operator" && id === "Cleanearth" && pw === "monitor2025") ||
+        (userRole === "admin" && id === "Cleanearth" && pw === "GT@2025")) {
+      document.getElementById('roleTitle').textContent = userRole === "admin" ? "Administrator Dashboard" : "Operator Dashboard";
+      loadMenu();
+      showPage('menuPage');
+    } else {
+      alert("Invalid credentials. Please try again.");
     }
+  }
 
-    function selectRole(role) {
-      currentRole = role;
-      rolePage.classList.add("hidden");
-      loginPage.classList.remove("hidden");
-    }
+  function loadMenu() {
+    const container = document.getElementById('formButtons');
+    container.innerHTML = "";
+    forms[userRole].forEach(f => {
+      const btn = document.createElement('button');
+      btn.textContent = f.name;
+      btn.onclick = () => loadForm(f.url);
+      container.appendChild(btn);
+    });
+  }
 
-    function login() {
-      const userId = document.getElementById("userId").value.trim();
-      const password = document.getElementById("password").value.trim();
+  function loadForm(url) {
+    document.getElementById('formFrame').src = url;
+    showPage('formPage');
+  }
 
-      if (
-        (currentRole === "operator" && userId === "Cleanearth" && password === "monitor2025") ||
-        (currentRole === "admin" && userId === "Cleanearth" && password === "GT@2025")
-      ) {
-        loginPage.classList.add("hidden");
-        dashboard.classList.remove("hidden");
-        showForms();
-        resetInactivityTimer();
-      } else {
-        alert("Invalid credentials. Please try again.");
-      }
-    }
+  function backToMenu() {
+    showPage('menuPage');
+  }
 
-    function showForms() {
-      formButtons.innerHTML = "";
-      if (currentRole === "operator") {
-        addFormButton("Daily Monitoring Log", "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNVlRMU5KRzUzRDNMTElYT0ZUUFVHRVJZWC4u&embed=true");
-        addFormButton("Process Sequence", "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNUJPME9FOFpFU1FXNTJIVjEyWlBGWEtKTC4u&embed=true");
-        addFormButton("Equipment Maintenance Log", "https://forms.office.com/r/svDTTiz80B?embed=true");
-      } else if (currentRole === "admin") {
-        addFormButton("Process Sequence", "https://forms.office.com/r/XddBJb34m7?embed=true");
-        addFormButton("Effluent Quality", "https://forms.office.com/r/8gJUjks0Hs?embed=true");
-      }
-    }
+  function logout() {
+    document.getElementById('userId').value = "";
+    document.getElementById('password').value = "";
+    showPage('welcomePage');
+  }
 
-    function addFormButton(name, link) {
-      const btn = document.createElement("button");
-      btn.textContent = name;
-      btn.onclick = () => openForm(link);
-      formButtons.appendChild(btn);
-    }
+  function resetTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      alert("Session timed out. Returning to Welcome page.");
+      logout();
+    }, 20 * 60 * 1000);
+  }
 
-    function openForm(link) {
-      dashboard.classList.add("hidden");
-      formContainer.classList.remove("hidden");
-      formFrame.src = link;
+  document.addEventListener("mousemove", resetTimer);
+  document.addEventListener("keypress", resetTimer);
 
-      // Return to dashboard when iframe is closed or reloaded
-      formFrame.onload = () => {
-        const formDocument = formFrame.contentWindow.document;
-        if (formDocument.body.innerText.includes("response was submitted")) {
-          goBackToMenu();
-        }
-      };
-    }
-
-    function goBackToMenu() {
-      formContainer.classList.add("hidden");
-      dashboard.classList.remove("hidden");
-    }
-
-    function logout() {
-      [dashboard, formContainer].forEach(el => el.classList.add("hidden"));
-      welcomePage.classList.remove("hidden");
-      clearTimeout(inactivityTimer);
-    }
-
-    function resetInactivityTimer() {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        alert("Session expired due to inactivity.");
-        logout();
-      }, 20 * 60 * 1000); // 20 minutes
-    }
-
-    document.addEventListener("mousemove", resetInactivityTimer);
-    document.addEventListener("keypress", resetInactivityTimer);
-  </script>
-
+  showPage('welcomePage');
+</script>
 </body>
 </html>
