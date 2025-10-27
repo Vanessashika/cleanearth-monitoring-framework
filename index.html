@@ -5,20 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cleanearth Monitoring Framework</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 
   body {
     background: linear-gradient(135deg, rgba(55,94,139,0.9), rgba(147,149,152,0.9), rgba(81,184,72,0.8));
     background-attachment: fixed;
     background-size: cover;
-    overflow: hidden;
     color: #fff;
     text-align: center;
+    overflow: hidden;
   }
 
   body::before {
@@ -30,15 +25,16 @@
     z-index: -1;
   }
 
-  .hidden { display: none; }
   .container {
-    height: 100vh;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.6s ease;
+    height: 100vh;
+    transition: opacity 0.5s ease;
   }
+
+  .active { display: flex; }
 
   h1 { font-size: 2.5rem; margin-bottom: 1rem; }
   h2 { margin-bottom: 1.5rem; font-weight: normal; }
@@ -55,17 +51,10 @@
     transition: all 0.3s ease;
   }
 
-  button:hover {
-    transform: scale(1.05);
-    background: #51b848;
-  }
+  button:hover { background: #51b848; transform: scale(1.05); }
 
-  .logout-btn {
-    background: #2c4370;
-  }
-  .logout-btn:hover {
-    background: #213556;
-  }
+  .logout-btn { background: #2c4370; }
+  .logout-btn:hover { background: #213556; }
 
   input {
     padding: 10px;
@@ -84,121 +73,139 @@
 </head>
 <body>
 
-<!-- Welcome Screen -->
-<div class="container" id="welcomePage">
+<!-- Page 1: Welcome -->
+<div class="container active" id="welcomePage">
   <h1>Welcome to Cleanearth Monitoring Framework</h1>
-  <button onclick="showPage('rolePage')">Get Started</button>
+  <button id="getStartedBtn">Get Started</button>
 </div>
 
-<!-- Who's Monitoring -->
-<div class="container hidden" id="rolePage">
+<!-- Page 2: Who's Monitoring -->
+<div class="container" id="rolePage">
   <h1>Who's Monitoring?</h1>
-  <button onclick="setRole('admin')">Administrator</button>
-  <button onclick="setRole('operator')">Operator</button>
+  <button id="adminBtn">Administrator</button>
+  <button id="operatorBtn">Operator</button>
 </div>
 
-<!-- Login Page -->
-<div class="container hidden" id="loginPage">
+<!-- Page 3: Login -->
+<div class="container" id="loginPage">
   <h1>Login</h1>
-  <input type="text" id="userId" placeholder="User ID" />
-  <input type="password" id="password" placeholder="Password" />
-  <button onclick="login()">Login</button>
-  <button class="logout-btn" onclick="showPage('rolePage')">Back</button>
+  <input type="text" id="userId" placeholder="User ID">
+  <input type="password" id="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+  <button class="logout-btn" id="backBtn">Back</button>
 </div>
 
-<!-- Menu Page -->
-<div class="container hidden" id="menuPage">
+<!-- Page 4: Menu -->
+<div class="container" id="menuPage">
   <h1 id="roleTitle"></h1>
-  <h2>Pick a form to fill</h2>
+  <h2>Select a Form</h2>
   <div id="formButtons"></div>
-  <button class="logout-btn" onclick="logout()">Logout</button>
+  <button class="logout-btn" id="logoutBtn">Logout</button>
 </div>
 
-<!-- Embedded Form Page -->
-<div class="container hidden" id="formPage">
+<!-- Page 5: Form Page -->
+<div class="container" id="formPage">
   <iframe id="formFrame"></iframe>
-  <button class="logout-btn" onclick="backToMenu()">Back to Menu</button>
+  <button class="logout-btn" id="backToMenuBtn">Back to Menu</button>
 </div>
 
 <script>
-  let userRole = "";
-  let inactivityTimer;
+let userRole = "";
+let inactivityTimer;
 
-  const forms = {
-    operator: [
-      { name: "Daily Monitoring Log", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNVlRMU5KRzUzRDNMTElYT0ZUUFVHRVJZWC4u&embed=true" },
-      { name: "Process Sequence", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNUJPME9FOFpFU1FXNTJIVjEyWlBGWEtKTC4u&embed=true" },
-      { name: "Equipment Maintenance Log", url: "https://forms.office.com/r/svDTTiz80B?embed=true" }
-    ],
-    admin: [
-      { name: "Process Sequence", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5URERPOFpHWjlFTU9GWlBORlRPMTA1M1pMVC4u&embed=true" },
-      { name: "Effluent Quality", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UQzBEUlI1OEtHNFBEWURZTzZRM1JOTE9MRS4u&embed=true" }
-    ]
-  };
+const pages = {
+  welcome: document.getElementById("welcomePage"),
+  role: document.getElementById("rolePage"),
+  login: document.getElementById("loginPage"),
+  menu: document.getElementById("menuPage"),
+  form: document.getElementById("formPage")
+};
 
-  function showPage(pageId) {
-    document.querySelectorAll('.container').forEach(div => div.classList.add('hidden'));
-    document.getElementById(pageId).classList.remove('hidden');
-    resetTimer();
+const forms = {
+  operator: [
+    { name: "Daily Monitoring Log", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNVlRMU5KRzUzRDNMTElYT0ZUUFVHRVJZWC4u&embed=true" },
+    { name: "Process Sequence", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNUJPME9FOFpFU1FXNTJIVjEyWlBGWEtKTC4u&embed=true" },
+    { name: "Equipment Maintenance Log", url: "https://forms.office.com/r/svDTTiz80B?embed=true" }
+  ],
+  admin: [
+    { name: "Process Sequence", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5URERPOFpHWjlFTU9GWlBORlRPMTA1M1pMVC4u&embed=true" },
+    { name: "Effluent Quality", url: "https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UQzBEUlI1OEtHNFBEWURZTzZRM1JOTE9MRS4u&embed=true" }
+  ]
+};
+
+function show(page) {
+  Object.values(pages).forEach(p => p.classList.remove("active"));
+  pages[page].classList.add("active");
+  resetTimer();
+}
+
+document.getElementById("getStartedBtn").onclick = () => show("role");
+
+document.getElementById("adminBtn").onclick = () => {
+  userRole = "admin";
+  show("login");
+};
+document.getElementById("operatorBtn").onclick = () => {
+  userRole = "operator";
+  show("login");
+};
+
+document.getElementById("backBtn").onclick = () => show("role");
+
+document.getElementById("loginBtn").onclick = () => {
+  const id = document.getElementById("userId").value.trim();
+  const pw = document.getElementById("password").value.trim();
+
+  const valid =
+    (userRole === "operator" && id === "Cleanearth" && pw === "monitor2025") ||
+    (userRole === "admin" && id === "Cleanearth" && pw === "GT@2025");
+
+  if (!valid) {
+    alert("Invalid credentials.");
+    return;
   }
 
-  function setRole(role) {
-    userRole = role;
-    showPage('loginPage');
-  }
+  document.getElementById("roleTitle").textContent =
+    userRole === "admin" ? "Administrator Dashboard" : "Operator Dashboard";
 
-  function login() {
-    const id = document.getElementById('userId').value.trim();
-    const pw = document.getElementById('password').value.trim();
+  const container = document.getElementById("formButtons");
+  container.innerHTML = "";
+  forms[userRole].forEach(f => {
+    const btn = document.createElement("button");
+    btn.textContent = f.name;
+    btn.onclick = () => loadForm(f.url);
+    container.appendChild(btn);
+  });
 
-    if ((userRole === "operator" && id === "Cleanearth" && pw === "monitor2025") ||
-        (userRole === "admin" && id === "Cleanearth" && pw === "GT@2025")) {
-      document.getElementById('roleTitle').textContent = userRole === "admin" ? "Administrator Dashboard" : "Operator Dashboard";
-      loadMenu();
-      showPage('menuPage');
-    } else {
-      alert("Invalid credentials. Please try again.");
-    }
-  }
+  show("menu");
+};
 
-  function loadMenu() {
-    const container = document.getElementById('formButtons');
-    container.innerHTML = "";
-    forms[userRole].forEach(f => {
-      const btn = document.createElement('button');
-      btn.textContent = f.name;
-      btn.onclick = () => loadForm(f.url);
-      container.appendChild(btn);
-    });
-  }
+function loadForm(url) {
+  document.getElementById("formFrame").src = url;
+  show("form");
+}
 
-  function loadForm(url) {
-    document.getElementById('formFrame').src = url;
-    showPage('formPage');
-  }
+document.getElementById("backToMenuBtn").onclick = () => show("menu");
 
-  function backToMenu() {
-    showPage('menuPage');
-  }
+document.getElementById("logoutBtn").onclick = logout;
 
-  function logout() {
-    document.getElementById('userId').value = "";
-    document.getElementById('password').value = "";
-    showPage('welcomePage');
-  }
+function logout() {
+  document.getElementById("userId").value = "";
+  document.getElementById("password").value = "";
+  show("welcome");
+}
 
-  function resetTimer() {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-      alert("Session timed out. Returning to Welcome page.");
-      logout();
-    }, 20 * 60 * 1000);
-  }
+function resetTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    alert("Session timed out. Returning to Welcome page.");
+    logout();
+  }, 20 * 60 * 1000);
+}
 
-  document.addEventListener("mousemove", resetTimer);
-  document.addEventListener("keypress", resetTimer);
-
-  showPage('welcomePage');
+document.addEventListener("mousemove", resetTimer);
+document.addEventListener("keypress", resetTimer);
 </script>
+
 </body>
 </html>
