@@ -131,36 +131,75 @@
     <h1>Welcome to Cleanearth!</h1>
     <h2>Pick a form to fill.</h2>
     <div class="form-buttons">
-      <button onclick="window.open('https://forms.office.com/r/pKvE5Tx4DK', '_blank')">Daily Log</button>
-      <button onclick="window.open('https://forms.office.com/r/8WqvQXfUpg', '_blank')">Process Sequence (3 Hours)</button>
-      <button onclick="window.open('https://forms.office.com/r/svDTTiz80B', '_blank')">Maintenance Log</button>
-      <button onclick="window.open('https://forms.office.com/r/8gJUjks0Hs', '_blank')">Effluent Quality</button>
+      <button onclick="openForm('https://forms.office.com/r/pKvE5Tx4DK')">Daily Log</button>
+      <button onclick="openForm('https://forms.office.com/r/8WqvQXfUpg')">Process Sequence (3 Hours)</button>
+      <button onclick="openForm('https://forms.office.com/r/svDTTiz80B')">Maintenance Log</button>
+      <button onclick="openForm('https://forms.office.com/r/8gJUjks0Hs')">Effluent Quality</button>
     </div>
     <button class="logout-btn" onclick="logout()">Logout</button>
     <footer>Cleanearth © 2025</footer>
   </div>
 
   <script>
-    // Simple login function
+    let inactivityTimer;
+
+    // Auto show dashboard if returning from a form
+    window.addEventListener('load', () => {
+      const loggedIn = localStorage.getItem('cleanearth_logged_in');
+      if (loggedIn === 'true') {
+        showDashboard();
+      }
+    });
+
+    // Login function
     function login() {
       const user = document.getElementById("userID").value.trim();
       const pass = document.getElementById("password").value.trim();
 
       if (user === "Cleanearth" && pass === "monitor2025") {
-        document.getElementById("loginPage").classList.add("hidden");
-        document.getElementById("mainPage").classList.remove("hidden");
+        localStorage.setItem('cleanearth_logged_in', 'true');
+        showDashboard();
       } else {
         alert("Invalid User ID or Password");
       }
     }
 
+    // Show dashboard
+    function showDashboard() {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("mainPage").classList.remove("hidden");
+      resetInactivityTimer();
+    }
+
+    // Open form in same tab and redirect back after form submission
+    function openForm(url) {
+      localStorage.setItem('cleanearth_logged_in', 'true');
+      window.open(url, '_blank');
+    }
+
     // Logout function
     function logout() {
+      localStorage.removeItem('cleanearth_logged_in');
       document.getElementById("mainPage").classList.add("hidden");
       document.getElementById("loginPage").classList.remove("hidden");
       document.getElementById("userID").value = "";
       document.getElementById("password").value = "";
+      clearTimeout(inactivityTimer);
     }
+
+    // Auto logout after 20 minutes of inactivity
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        alert("Session expired due to inactivity.");
+        logout();
+      }, 20 * 60 * 1000); // 20 minutes
+    }
+
+    // Reset inactivity timer when there is user activity
+    ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt =>
+      document.addEventListener(evt, resetInactivityTimer)
+    );
   </script>
 
 </body>
