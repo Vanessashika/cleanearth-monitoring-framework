@@ -5,202 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cleanearth Monitoring Framework</title>
   <style>
-    /* Background setup */
     body {
+      font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background:
-        linear-gradient(to bottom right, rgba(55, 94, 139, 0.9), rgba(147, 149, 152, 0.9)),
-        url('https://raw.githubusercontent.com/Vanessashika/cleanearth-monitoring-framework/refs/heads/main/Cleanearth%2016.9%20(1).png') center/cover no-repeat;
-      background-size: 120%;
-      background-attachment: fixed;
-      background-blend-mode: overlay;
+      background: linear-gradient(135deg, #375e8b, #939598);
+      color: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      overflow: hidden;
-      position: relative;
+      transition: background 0.5s;
     }
 
-    /* Subtle blur layer */
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 0;
-    }
-
-    /* Shared container styling */
     .container {
-      position: relative;
-      z-index: 1;
       text-align: center;
-      background-color: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.1);
       padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      width: 380px;
-      animation: fadeIn 1s ease-in-out;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 800px;
+      animation: fadeIn 0.8s ease;
     }
 
     h1 {
-      color: #375e8b;
-      margin-bottom: 10px;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      color: #ffffff;
     }
 
     h2 {
-      color: #939598;
-      font-size: 16px;
+      font-size: 1.3em;
       margin-bottom: 25px;
-    }
-
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
+      color: #e0e0e0;
     }
 
     button {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
       background-color: #375e8b;
       color: white;
-      padding: 10px 20px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
       transition: background-color 0.3s;
     }
 
     button:hover {
-      background-color: #939598;
+      background-color: #2b4a70;
+    }
+
+    iframe {
+      width: 100%;
+      height: 550px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+      background: white;
     }
 
     .hidden {
       display: none;
     }
 
-    .form-buttons button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
+    .thank-you {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #ffffff;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .logout-btn {
-      background-color: #939598;
-      margin-top: 25px;
-    }
-
-    .logout-btn:hover {
-      background-color: #375e8b;
-    }
-
-    footer {
-      margin-top: 25px;
-      color: #939598;
-      font-size: 12px;
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-<body>
 
-  <!-- Login Page -->
-  <div class="container" id="loginPage">
-    <h1>Cleanearth Login</h1>
-    <input type="text" id="userID" placeholder="User ID" />
-    <input type="password" id="password" placeholder="Password" />
+<body>
+  <!-- LOGIN -->
+  <div class="container" id="loginContainer">
+    <h1>Welcome to Cleanearth!</h1>
+    <h2>Please log in</h2>
+    <input type="text" id="username" placeholder="Enter your name" 
+      style="padding: 10px; width: 80%; border-radius: 6px; border: none; margin-bottom: 10px;">
+    <br />
     <button onclick="login()">Login</button>
   </div>
 
-  <!-- Dashboard / Welcome Page -->
-  <div class="container hidden" id="mainPage">
+  <!-- MAIN MENU -->
+  <div class="container hidden" id="menuContainer">
     <h1>Welcome to Cleanearth!</h1>
-    <h2>Pick a form to fill.</h2>
-    <div class="form-buttons">
-      <button onclick="openForm('https://forms.office.com/r/pKvE5Tx4DK')">Daily Log</button>
-      <button onclick="openForm('https://forms.office.com/r/8WqvQXfUpg')">Process Sequence (3 Hours)</button>
-      <button onclick="openForm('https://forms.office.com/r/svDTTiz80B')">Maintenance Log</button>
-      <button onclick="openForm('https://forms.office.com/r/8gJUjks0Hs')">Effluent Quality</button>
-    </div>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-    <footer>Cleanearth © 2025</footer>
+    <h2>Pick a form to fill</h2>
+    <button onclick="loadForm('https://forms.office.com/r/svDTTiz80B?embed=true')">Equipment Maintenance Log</button>
+    <button onclick="loadForm('https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNVlRMU5KRzUzRDNMTElYT0ZUUFVHRVJZWC4u&embed=true')">Daily Monitoring Log</button>
+    <button onclick="loadForm('https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UNUJPME9FOFpFU1FXNTJIVjEyWlBGWEtKTC4u&embed=true')">Process Sequence</button>
+    <button onclick="loadForm('https://forms.office.com/Pages/ResponsePage.aspx?id=RMa6ghCq7UWKc3yHvmV4LNsz3HvfiiRPklPGQ2iIIJ5UQzBEUlI1OEtHNFBEWURZTzZRM1JOTE9MRS4u&embed=true')">Effluent Quality</button>
+    <br />
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- FORM VIEW -->
+  <div class="container hidden" id="formContainer">
+    <h1>Cleanearth Form</h1>
+    <iframe id="formFrame"></iframe>
+    <div class="thank-you hidden" id="thankYouMessage">Thank you! Redirecting to main menu...</div>
   </div>
 
   <script>
     let inactivityTimer;
 
-    // Auto show dashboard if returning from a form
-    window.addEventListener('load', () => {
-      const loggedIn = localStorage.getItem('cleanearth_logged_in');
-      if (loggedIn === 'true') {
-        showDashboard();
-      }
-    });
-
-    // Login function
     function login() {
-      const user = document.getElementById("userID").value.trim();
-      const pass = document.getElementById("password").value.trim();
-
-      if (user === "Cleanearth" && pass === "monitor2025") {
-        localStorage.setItem('cleanearth_logged_in', 'true');
-        showDashboard();
+      const username = document.getElementById('username').value.trim();
+      if (username) {
+        document.getElementById('loginContainer').classList.add('hidden');
+        document.getElementById('menuContainer').classList.remove('hidden');
+        resetInactivityTimer();
       } else {
-        alert("Invalid User ID or Password");
+        alert('Please enter your name to log in.');
       }
     }
 
-    // Show dashboard
-    function showDashboard() {
-      document.getElementById("loginPage").classList.add("hidden");
-      document.getElementById("mainPage").classList.remove("hidden");
+    function logout() {
+      document.getElementById('menuContainer').classList.add('hidden');
+      document.getElementById('formContainer').classList.add('hidden');
+      document.getElementById('loginContainer').classList.remove('hidden');
+      document.getElementById('username').value = "";
+      clearTimeout(inactivityTimer);
+    }
+
+    function loadForm(formURL) {
+      document.getElementById('menuContainer').classList.add('hidden');
+      document.getElementById('formContainer').classList.remove('hidden');
+      document.getElementById('formFrame').src = formURL;
+      
+      const iframe = document.getElementById('formFrame');
+      iframe.onload = function () {
+        const src = iframe.src.toLowerCase();
+        if (src.includes('formresponse') || src.includes('thankyou') || src.includes('submitted')) {
+          document.getElementById('formFrame').classList.add('hidden');
+          document.getElementById('thankYouMessage').classList.remove('hidden');
+          setTimeout(() => {
+            document.getElementById('thankYouMessage').classList.add('hidden');
+            document.getElementById('formFrame').classList.remove('hidden');
+            document.getElementById('formContainer').classList.add('hidden');
+            document.getElementById('menuContainer').classList.remove('hidden');
+          }, 5000);
+        }
+      };
       resetInactivityTimer();
     }
 
-    // Open form in same tab and redirect back after form submission
-    function openForm(url) {
-      localStorage.setItem('cleanearth_logged_in', 'true');
-      window.open(url, '_blank');
-    }
-
-    // Logout function
-    function logout() {
-      localStorage.removeItem('cleanearth_logged_in');
-      document.getElementById("mainPage").classList.add("hidden");
-      document.getElementById("loginPage").classList.remove("hidden");
-      document.getElementById("userID").value = "";
-      document.getElementById("password").value = "";
-      clearTimeout(inactivityTimer);
-    }
-
-    // Auto logout after 20 minutes of inactivity
     function resetInactivityTimer() {
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
-        alert("Session expired due to inactivity.");
+        alert('Session expired due to inactivity.');
         logout();
       }, 20 * 60 * 1000); // 20 minutes
     }
 
-    // Reset inactivity timer when there is user activity
-    ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt =>
-      document.addEventListener(evt, resetInactivityTimer)
-    );
+    window.onload = resetInactivityTimer;
+    document.onmousemove = resetInactivityTimer;
+    document.onkeydown = resetInactivityTimer;
   </script>
-
 </body>
 </html>
